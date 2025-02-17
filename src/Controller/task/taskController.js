@@ -134,8 +134,6 @@ exports.undoTaskStatus = async (req, res) => {
             where: { id: parseInt(id, 10) },
         });
 
-        console.log("Existing Task Data:", existingTask);
-
         if (!existingTask || existingTask.userId !== parseInt(userId, 10)) {
             return res.status(403).json({ error: 'Unauthorized to undo this task status' });
         }
