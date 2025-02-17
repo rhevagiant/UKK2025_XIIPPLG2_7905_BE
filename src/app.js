@@ -1,9 +1,19 @@
+const cors = require('cors');
 const express = require('express');
 const authRoutes = require('./Routes/auth/authRoutes');
 const categoryRoutes = require('./Routes/category/categoryRoutes');
 const taskRoutes = require('./Routes/task/taskRoutes');
 
 const app = express();
+
+const corsOptions={
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'
+  ],
+  credentialas: true,
+}
+
+app.use(cors(corsOptions))
 
 app.use(express.json())
 
