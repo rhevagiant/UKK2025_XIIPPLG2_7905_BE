@@ -41,6 +41,28 @@ exports.getAllCategories = async (req, res) => {
     }
 }
 
+exports.getCategoryTasks = async (req, res) => {
+    try {
+        const { categoryId } = req.params;
+        const userId = req.headers['user-id'];
+
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
+
+        const tasks = await prismaClient.task.findMany({
+            where: {
+                categoryId: parseInt(categoryId, 10),
+                userId: parseInt(userId, 10),
+            },
+            include: { category: true },
+        });
+
+        res.status(200).json(tasks);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 
 exports.updateCategory = async (req, res) => {
