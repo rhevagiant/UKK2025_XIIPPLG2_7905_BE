@@ -36,7 +36,6 @@ model Category {
 model Task {
   id         Int      @id @default(autoincrement())
   task       String
-  previousStatus String?
   status     Status   @default(NOT_COMPLETE)
   userId     Int
   categoryId Int

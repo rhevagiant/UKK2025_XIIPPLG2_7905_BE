@@ -10,7 +10,6 @@ const corsOptions={
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'
   ],
-  credentialas: true,
 }
 
 app.use(cors(corsOptions))
@@ -19,7 +18,7 @@ app.use(express.json())
 
 app.use('/user', authRoutes);
 app.use('/category', categoryRoutes);
-app.use('/task', taskRoutes);
+app.use('/tasks', taskRoutes);
 
 app.use((err, req, res, next) => {
     console.error('Error:', err.stack); 

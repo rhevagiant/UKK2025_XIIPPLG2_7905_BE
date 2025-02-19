@@ -87,75 +87,30 @@ exports.updateTask = async (req, res) => {
 
 exports.updateTaskStatus = async (req, res) => {
     try {
-        const { id } = req.params;
         const { status } = req.body;
-        const userId = req.headers['user-id'];
+        const taskId = parseInt(req.params.id, 10);
 
-        if (!userId) {
-            return res.status(400).json({ error: 'User ID is required' });
+        if (!taskId || !status) {
+            return res.status(400).json({ error: "Task ID and status are required" });
         }
 
-        if (!status) {
-            return res.status(400).json({ error: 'Status is required' });
-        }
+        const task = await prismaClient.task.findUnique({ where: { id: taskId } });
 
-        const existingTask = await prismaClient.task.findUnique({
-            where: { id: parseInt(id, 10) },
-        });
-
-        if (!existingTask || existingTask.userId !== parseInt(userId, 10)) {
-            return res.status(403).json({ error: 'Unauthorized to update this task' });
+        if (!task) {
+            return res.status(404).json({ error: "Task not found" });
         }
 
         const updatedTask = await prismaClient.task.update({
-            where: { id: parseInt(id, 10) },
-            data: { 
-                previousStatus: existingTask.status, 
-                status 
-            },
+            where: { id: taskId },
+            data: { status },
         });
 
-        res.status(200).json(updatedTask);
+        res.json(updatedTask);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Error updating task status:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 };
-
-exports.undoTaskStatus = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const userId = req.headers['user-id'];
-
-        if (!userId) {
-            return res.status(400).json({ error: 'User ID is required' });
-        }
-
-        const existingTask = await prismaClient.task.findUnique({
-            where: { id: parseInt(id, 10) },
-        });
-
-        if (!existingTask || existingTask.userId !== parseInt(userId, 10)) {
-            return res.status(403).json({ error: 'Unauthorized to undo this task status' });
-        }
-
-        if (!existingTask.previousStatus) {
-            return res.status(400).json({ error: 'No previous status to undo' });
-        }
-
-        const updatedTask = await prismaClient.task.update({
-            where: { id: parseInt(id, 10) },
-            data: { 
-                status: existingTask.previousStatus, 
-                previousStatus: null, 
-            }
-        });
-
-        res.status(200).json(updatedTask);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
 
 
 
