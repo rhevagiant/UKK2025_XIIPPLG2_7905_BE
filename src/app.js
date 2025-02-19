@@ -10,6 +10,7 @@ const corsOptions={
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'
   ],
+  credentialas: true,
 }
 
 app.use(cors(corsOptions))
