@@ -1,3 +1,4 @@
+require('dotenv').config();
 const cors = require('cors');
 const express = require('express');
 const authRoutes = require('./Routes/auth/authRoutes');
@@ -11,11 +12,12 @@ const corsOptions={
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'
   ],
   credentialas: true,
-}
+};
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 
-app.use(express.json())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/user', authRoutes);
 app.use('/category', categoryRoutes);

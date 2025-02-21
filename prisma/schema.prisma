@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 datasource db {
-  provider = "sqlite" 
+  provider = "sqlite"
   url      = "file:./dev.db"
 }
 
@@ -14,14 +14,22 @@ generator client {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String    @unique
-  password  String
-  email     String    @unique
-  name      String
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  name     String
+  email    String   @unique
+  password String
+  photos   Photo[]  // Relation to Photo model
 
   categories Category[]
   tasks      Task[]
+}
+
+model Photo {
+  id     Int    @id @default(autoincrement())
+  image  String
+  userId Int
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 model Category {
@@ -39,12 +47,11 @@ model Task {
   status     Status   @default(NOT_COMPLETE)
   userId     Int
   categoryId Int
-  date  DateTime @default(now())
+  date       DateTime @default(now())
 
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
-
 
 enum Status {
   COMPLETE
